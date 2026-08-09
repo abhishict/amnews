@@ -1,4 +1,4 @@
-import { fetchTopHeadlines } from "./feeds";
+import { fetchTopHeadlines, RSS_SOURCES } from "./feeds";
 import { processBatch } from "./processor";
 import { upsertBatch, deleteExpired } from "./store";
 import { getServiceClient } from "./supabase";
@@ -8,6 +8,12 @@ function addDays(date: Date, days: number): Date {
   const d = new Date(date);
   d.setDate(d.getDate() + days);
   return d;
+}
+
+/** Map sourceId to display name */
+function getSourceName(sourceId: string): string {
+  const source = RSS_SOURCES.find((s) => s.id === sourceId);
+  return source?.name || "News";
 }
 
 const MAX_HEADLINES = 30; // Process top 30 headlines per run
@@ -48,7 +54,7 @@ export async function runDailyPipeline(): Promise<PipelineResult> {
               sourceUrl: batch[j].link,
               headline: r.headline,
               summary: r.summary,
-              origin: r.origin,
+              origin: getSourceName(batch[j].sourceId),
               eli5Background: r.eli5.background,
               eli5Explanation: r.eli5.explanation,
               eli5Consequences: r.eli5.consequences,
@@ -56,7 +62,7 @@ export async function runDailyPipeline(): Promise<PipelineResult> {
               searchQuery: null,
               publishedAt: batch[j].pubDate,
               processedAt: new Date(),
-              expiresAt: addDays(new Date(), 2), // 2 day expiry
+              expiresAt: addDays(new Date(), 2),
             });
           }
         }
