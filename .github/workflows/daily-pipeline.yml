@@ -2,8 +2,9 @@ name: Daily News Pipeline
 
 on:
   schedule:
-    # 7am EST = 12:00 UTC
-    - cron: "0 12 * * *"
+    - cron: "0 12 * * *"   # 7 AM Eastern
+    - cron: "0 18 * * *"   # 1 PM Eastern
+    - cron: "0 0 * * *"    # 7 PM Eastern
   workflow_dispatch: # Allow manual trigger
 
 jobs:
