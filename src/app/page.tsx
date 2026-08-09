@@ -2,7 +2,7 @@ import { getLatestCards } from "@/lib/store";
 import { NewsCard } from "@/types";
 import Feed from "@/components/Feed";
 
-export const revalidate = 300;
+export const revalidate = 0; // Always fetch fresh data
 
 export default async function Home() {
   let initialCards: NewsCard[] = [];
